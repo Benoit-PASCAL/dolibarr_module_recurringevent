@@ -81,7 +81,7 @@ class ActionsRecurringEvent
      */
 	public function formObjectOptions($parameters, &$object, &$action, $hookmanager)
     {
-        global $langs;
+        global $langs, $user;
 
         if ($parameters['currentcontext'] === 'externalaccesspage')
         {
@@ -95,7 +95,7 @@ class ActionsRecurringEvent
                 $recurringEvent->fetchBy($object->id, 'fk_actioncomm');
 
                 $this->resprints= '
-                <!-- DEBUT form récurrence : ceci devrait être externalisé dans un module puis remplacé par l\'appel d\'un hook -->
+                <!-- START recurrence form: this should be externalized in a module and then replaced by a hook call -->
                 <div class="form-row my-3">
                     <div class="custom-control custom-checkbox">
                         <input onchange="$(\'#recurring-options\').toggleClass(\'d-block\')" id="toggle-recurrence" name="is_recurrent" type="checkbox" class="custom-control-input" '.(!empty($recurringEvent->id) ? 'checked' : '').'>
@@ -185,7 +185,7 @@ class ActionsRecurringEvent
                     </fieldset>
 
                 </div>
-                <!-- FIN form récurrence -->
+                <!-- END recurrence form -->
                 ';
             }
 
@@ -286,6 +286,34 @@ class ActionsRecurringEvent
                 <tr class="trextrafieldseparator trextrafieldseparator_recurringevent_end"><td colspan="2"></td></tr>
             ';
         }
+
+        $isLocked = !empty($recurringEvent->locked) ? '1' : '0';
+
+        // Generate the form with the locked parameter
+        $this->resprints = '
+            <!-- Recurrence Form -->
+            <div class="form-row my-3">
+                <div class="custom-control custom-checkbox">
+                    <input onchange="$(\'#recurring-options\').toggleClass(\'d-block\')" id="toggle-recurrence" name="is_recurrent" type="checkbox" class="custom-control-input" '.(!empty($recurringEvent->id) ? 'checked' : '').'>
+                    <label class="custom-control-label" for="toggle-recurrence">'.$langs->trans('RecurringEventDefineEventAsRecurrent').'</label>
+                </div>
+            </div>
+
+            <input type="hidden" id="recurrence_locked" value="'.$isLocked.'">
+
+            <div id="recurring-options" class="form-group my-3 '.(!empty($recurringEvent->id) ? '' : 'd-none').'">
+                <!-- Recurrence Options -->
+                <!-- ... Existing recurrence fields ... -->
+
+                <!-- Reset Button -->
+                <button type="button" class="btn btn-secondary mt-3" id="reset-recurrence-button">'.$langs->trans('RecurringEventResetRecurrence').'</button>
+            </div>
+        ';
+
+        // Include the external JavaScript file
+        $this->resprints .= '
+            <script src="'.DOL_URL_ROOT.'/custom/recurringevent/js/recurringevent.js"></script>
+        ';
 
         return 0;
     }

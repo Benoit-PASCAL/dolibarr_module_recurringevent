@@ -64,4 +64,25 @@ foreach($linkedObjectBlock as $key => $objectlink)
 
 </table>
 
+<tr class="recurring-options">
+    <!-- ... existing form fields ... -->
+    <td colspan="5">
+        <button type="button" id="reset-recurrence" class="btn btn-secondary">
+            <?php echo $langs->trans('ResetRecurring'); ?>
+        </button>
+    </td>
+</tr>
+
+<script>
+document.getElementById('reset-recurrence').addEventListener('click', function() {
+    var selectedDate = document.getElementById('date_selection').value;
+    document.getElementById('date_recurrence').value = selectedDate;
+});
+
+
+<?php if (!empty($object->locked)): ?>
+    document.getElementById('reset-recurrence').disabled = true;
+<?php endif; ?>
+</script>
+
 <!-- END PHP TEMPLATE -->

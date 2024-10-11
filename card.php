@@ -195,29 +195,28 @@ if ($action == 'create')
 {
     print load_fiche_titre($langs->trans('NewRecurringEvent'), '', 'recurringevent@recurringevent');
 
-    print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+    print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'" id="recurrence-form">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
     print '<input type="hidden" name="action" value="add">';
     print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
+    print '<input type="hidden" name="id" value="'.$object->id.'">';
 
     dol_fiche_head(array(), '');
 
     print '<table class="border centpercent">'."\n";
 
-    // Common attributes
     include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_add.tpl.php';
-
-    // Other attributes
     include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_add.tpl.php';
 
     print '</table>'."\n";
 
     dol_fiche_end();
 
+    // Display the form submission buttons
     print '<div class="center">';
     print '<input type="submit" class="button" name="add" value="'.dol_escape_htmltag($langs->trans('Create')).'">';
     print '&nbsp; ';
-    print '<input type="'.($backtopage?"submit":"button").'" class="button" name="cancel" value="'.dol_escape_htmltag($langs->trans('Cancel')).'"'.($backtopage?'':' onclick="javascript:history.go(-1)"').'>';	// Cancel for create does not post form if we don't know the backtopage
+    print '<input type="'.($backtopage?"submit":"button").'" class="button" name="cancel" value="'.dol_escape_htmltag($langs->trans('Cancel')).'"'.($backtopage?'':' onclick="javascript:history.go(-1)"').'">';
     print '</div>';
 
     print '</form>';
@@ -233,11 +232,15 @@ else
     {
         if (!empty($object->id) && $action === 'edit')
         {
-            print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+            // Start the form for editing a recurring event
+            print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'" id="recurrence-form">';
             print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
             print '<input type="hidden" name="action" value="update">';
             print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
             print '<input type="hidden" name="id" value="'.$object->id.'">';
+
+            // Add a hidden field for the 'locked' parameter
+            echo '<input type="hidden" name="locked" value="'.(!empty($object->locked) ? '1' : '0').'">';
 
             $head = recurringevent_prepare_head($object);
             $picto = 'recurringevent@recurringevent';
@@ -245,23 +248,26 @@ else
 
             print '<table class="border centpercent">'."\n";
 
-            // Common attributes
+            // Include common fields for editing
             include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_edit.tpl.php';
-
-            // Other attributes
+            // Include extra fields for editing
             include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_edit.tpl.php';
 
             print '</table>';
 
             dol_fiche_end();
 
+            // Display save and cancel buttons
             print '<div class="center"><input type="submit" class="button" name="save" value="'.$langs->trans('Save').'">';
             print ' &nbsp; <input type="submit" class="button" name="cancel" value="'.$langs->trans('Cancel').'">';
             print '</div>';
 
             print '</form>';
+
+            // Include the external JavaScript file
+            print '<script src="'.DOL_URL_ROOT.'/custom/recurringevent/js/recurringevent.js"></script>';
         }
-        elseif ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create')))
+        else
         {
             $head = recurringevent_prepare_head($object);
             $picto = 'recurringevent@recurringevent';
@@ -270,99 +276,69 @@ else
             $formconfirm = getFormConfirmRecurringEvent($form, $object, $action);
             if (!empty($formconfirm)) print $formconfirm;
 
-
             $linkback = '<a href="' .dol_buildpath('/recurringevent/list.php', 1) . '?restore_lastsearch_values=1">' . $langs->trans('BackToList') . '</a>';
 
-            $morehtmlref='<div class="refidno">';
-            /*
-            // Ref bis
-            $morehtmlref.=$form->editfieldkey("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->recurringevent->write, 'string', '', 0, 1);
-            $morehtmlref.=$form->editfieldval("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->recurringevent->write, 'string', '', null, null, '', 1);
-            // Thirdparty
-            $morehtmlref.='<br>'.$langs->trans('ThirdParty') . ' : ' . $soc->getNomUrl(1);
-            */
-            $morehtmlref.='</div>';
+            $morehtmlref='<div class="refidno"></div>';
 
-
-            $morehtmlstatus.=''; //$object->getLibStatut(2); // pas besoin fait doublon
+            $morehtmlstatus='';
             dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
 
             print '<div class="fichecenter">';
 
-            print '<div class="fichehalfleft">'; // Auto close by commonfields_view.tpl.php
+            print '<div class="fichehalfleft">';
             print '<div class="underbanner clearboth"></div>';
-            print '<table class="border tableforfield" width="100%">'."\n";
+            print '<table class="border tableforfield" width="100%">';
 
-            // Common attributes
-            //$keyforbreak='fieldkeytoswithonsecondcolumn';
+            // Include common fields for viewing
             include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_view.tpl.php';
-
-            // Other attributes
+            // Include extra fields for viewing
             include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
 
             print '</table>';
 
-            print '</div></div>'; // Fin fichehalfright & ficheaddleft
-            print '</div>'; // Fin fichecenter
+            print '</div></div>';
+            print '</div>';
 
             print '<div class="clearboth"></div><br />';
 
             print '<div class="tabsAction">'."\n";
             $parameters=array();
-            $reshook = $hookmanager->executeHooks('addMoreActionsButtons', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
+            $reshook = $hookmanager->executeHooks('addMoreActionsButtons', $parameters, $object, $action);
+
             if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
             if (empty($reshook))
             {
-                // Send
-                //        print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&action=presend&mode=init#formmailbeforetitle">' . $langs->trans('SendMail') . '</a>'."\n";
-
-                // Modify
                 if (!empty($user->rights->recurringevent->write))
                 {
                     if ($object->status !== RecurringEvent::STATUS_CANCELED)
                     {
-                        // Modify
                         if ($object->status !== RecurringEvent::STATUS_ACCEPTED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("RecurringEventModify").'</a></div>'."\n";
-                        // Clone
                         print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("RecurringEventClone").'</a></div>'."\n";
                     }
 
-                    // Valid
                     if ($object->status === RecurringEvent::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=valid">'.$langs->trans('RecurringEventValid').'</a></div>'."\n";
 
-                    // Accept
                     if ($object->status === RecurringEvent::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=accept">'.$langs->trans('RecurringEventAccept').'</a></div>'."\n";
-                    // Refuse
                     if ($object->status === RecurringEvent::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=refuse">'.$langs->trans('RecurringEventRefuse').'</a></div>'."\n";
 
-
-                    // Reopen
                     if ($object->status === RecurringEvent::STATUS_ACCEPTED || $object->status === RecurringEvent::STATUS_REFUSED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=reopen">'.$langs->trans('RecurringEventReopen').'</a></div>'."\n";
-                    // Cancel
                     if ($object->status === RecurringEvent::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=cancel">'.$langs->trans("RecurringEventCancel").'</a></div>'."\n";
                 }
                 else
                 {
                     if ($object->status !== RecurringEvent::STATUS_CANCELED)
                     {
-                        // Modify
                         if ($object->status !== RecurringEvent::STATUS_ACCEPTED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("RecurringEventModify").'</a></div>'."\n";
-                        // Clone
                         print '<div class="inline-block divButAction"><a class="butAction" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("RecurringEventClone").'</a></div>'."\n";
                     }
 
-                    // Valid
                     if ($object->status === RecurringEvent::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans('RecurringEventValid').'</a></div>'."\n";
 
-                    // Accept
                     if ($object->status === RecurringEvent::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#">'.$langs->trans('RecurringEventAccept').'</a></div>'."\n";
-                    // Refuse
                     if ($object->status === RecurringEvent::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#">'.$langs->trans('RecurringEventRefuse').'</a></div>'."\n";
 
-                    // Reopen
                     if ($object->status === RecurringEvent::STATUS_ACCEPTED || $object->status === RecurringEvent::STATUS_REFUSED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans('RecurringEventReopen').'</a></div>'."\n";
-                    // Cancel
                     if ($object->status === RecurringEvent::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("RecurringEventCancel").'</a></div>'."\n";
                 }
 
@@ -383,7 +359,6 @@ else
 
             print '</div><div class="fichehalfright"><div class="ficheaddleft">';
 
-            // List of actions on element
             include_once DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php';
             $formactions = new FormActions($db);
             $somethingshown = $formactions->showactions($object, $object->element, $socid, 1);
@@ -394,7 +369,6 @@ else
         }
     }
 }
-
 
 llxFooter();
 $db->close();

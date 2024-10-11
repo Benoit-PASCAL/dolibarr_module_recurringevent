@@ -181,6 +181,15 @@ class RecurringEvent extends SeedObject
             'position' => 1000
         ),
 
+        'number' => array(
+            'type' => 'integer',
+            'label' => 'NumberOfRecurrences',
+            'visible' => 1,
+            'enabled' => 1,
+            'position' => 100,
+            'index' => 0,
+        ),
+
     );
 
     /** @var int $entity Entity id */
@@ -212,6 +221,9 @@ class RecurringEvent extends SeedObject
     /** @var bool $skip_generate_recurring */
     public $skip_generate_recurring = false;
 
+    /** @var int $number Nombre d'événements récurrents à créer */
+    public $number;
+
     /**
      * RecurringEvent constructor.
      * @param DoliDB    $db    Database connector
@@ -226,6 +238,7 @@ class RecurringEvent extends SeedObject
 
         $this->entity = $conf->entity;
         $this->fk_actioncomm_master = 0;
+        $this->number = 1;
     }
 
     /**
@@ -415,6 +428,11 @@ class RecurringEvent extends SeedObject
             $this->end_date = 0; // integer, not double
         }
 
+        $this->number = (int) $this->number;
+        if ($this->number < 1) {
+            $this->number = 1;
+        }
+
         return 1;
     }
 
@@ -489,10 +507,14 @@ class RecurringEvent extends SeedObject
         if ($actioncommMaster->fetch($this->fk_actioncomm) > 0)
         {
             $current_date = $actioncommMaster->datep;
-	        $delta=0;
-	        if (!empty($actioncommMaster->datef)) {
-		        $delta = $actioncommMaster->datef - $current_date;
-	        }
+            $delta = 0;
+            if (!empty($actioncommMaster->datef)) {
+                $delta = $actioncommMaster->datef - $current_date;
+            }
+
+            // Modification: Utilisation de la propriété 'number' pour limiter les événements créés
+            $maxEvents = !empty($this->number) ? (int)$this->number : PHP_INT_MAX;
+            $createdEvents = 0;
 
             if ($this->frequency_unit !== 'week')
             {
@@ -500,17 +522,19 @@ class RecurringEvent extends SeedObject
                 {
                     while ($current_date = strtotime('+'.$this->frequency.' '.$this->frequency_unit, $current_date))
                     {
-                        if ($current_date > $this->end_date) break;
+                        if ($current_date > $this->end_date || $createdEvents >= $maxEvents) break;
                         $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
+                        $createdEvents++;
                     }
                 }
                 else
                 {
-                    $end_occurrence = $this->end_occurrence - 1; // -1, car l'event master compte pour 1
-                    while ($end_occurrence--)
+                    $end_occurrence = $this->end_occurrence - 1;
+                    while ($end_occurrence-- && $createdEvents < $maxEvents)
                     {
                         $current_date = strtotime('+'.$this->frequency.' '.$this->frequency_unit, $current_date);
                         $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
+                        $createdEvents++;
                     }
                 }
             }
@@ -518,7 +542,6 @@ class RecurringEvent extends SeedObject
             {
                 if (!in_array(date('w', $current_date), $this->weekday_repeat))
                 {
-                    // Besoin de modifier la date de début et fin de l'event master
                     while ($current_date = strtotime('+1 day ', $current_date))
                     {
                         $weekday_index = date('w', $current_date);
@@ -526,7 +549,7 @@ class RecurringEvent extends SeedObject
                         {
                             $actioncommMaster->datep = $current_date;
                             if (!empty($delta)) {
-	                            $actioncommMaster->datef = $current_date + $delta;
+                                $actioncommMaster->datef = $current_date + $delta;
                             }
                             $actioncommMaster->context['recurringevent_skip_trigger_create'] = true;
                             $actioncommMaster->update($user, $notrigger);
@@ -535,23 +558,23 @@ class RecurringEvent extends SeedObject
                     }
                 }
 
-
                 if ($this->end_type === 'date')
                 {
                     while ($current_date = strtotime('+1 day ', $current_date))
                     {
-                        if ($current_date > $this->end_date) break;
+                        if ($current_date > $this->end_date || $createdEvents >= $maxEvents) break;
                         $weekday_index = date('w', $current_date);
                         if (in_array($weekday_index, $this->weekday_repeat))
                         {
                             $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
+                            $createdEvents++;
                         }
                     }
                 }
                 else
                 {
-                    $end_occurrence = $this->end_occurrence - 1; // -1, car l'event master compte pour 1
-                    while ($end_occurrence)
+                    $end_occurrence = $this->end_occurrence - 1;
+                    while ($end_occurrence && $createdEvents < $maxEvents)
                     {
                         $current_date = strtotime('+1 day ', $current_date);
                         $weekday_index = date('w', $current_date);
@@ -559,6 +582,7 @@ class RecurringEvent extends SeedObject
                         {
                             $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
                             $end_occurrence--;
+                            $createdEvents++;
                         }
                     }
                 }
@@ -580,18 +604,16 @@ class RecurringEvent extends SeedObject
      */
     private function createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta)
     {
-        /** @var ActionComm $ac */
         $ac = dol_clone($actioncommMaster);
-        $ac->db = $this->db; // Reinit database connector
+        $ac->db = $this->db;
         $ac->id = null;
         $ac->datep = $current_date;
         if (!empty($delta)) {
-	        $ac->datef = $current_date + $delta;
+            $ac->datef = $current_date + $delta;
         }
         $ac->context['recurringevent_skip_trigger_create'] = true;
         $ac->create($user, $notrigger);
 
-        /** @var RecurringEvent $re */
         $re = dol_clone($this);
         $re->db = $this->db;
         $re->id = null;
@@ -599,5 +621,51 @@ class RecurringEvent extends SeedObject
         $re->fk_actioncomm_master = $actioncommMaster->id;
         $re->skip_generate_recurring = true;
         $re->save($user, $notrigger);
+    }
+
+    /**
+     * Crée les événements récurrents en fonction des paramètres définis.
+     *
+     * @param User $user Utilisateur effectuant l'action
+     * @return void
+     */
+    public function createRecurringEvents($user)
+    {
+        $count = 0;
+        $max = !empty($this->number) ? (int)$this->number : 1;
+
+        $currentDate = strtotime($this->actioncomm_datep);
+        while ($count < $max) {
+            $event = new self($this->db);
+            $event->fk_actioncomm = $this->fk_actioncomm;
+            $event->frequency = $this->frequency;
+            $event->frequency_unit = $this->frequency_unit;
+            $event->weekday_repeat = $this->weekday_repeat;
+            $event->end_type = $this->end_type;
+            $event->actioncomm_datep = date('Y-m-d', $currentDate);
+            $event->actioncomm_datef = date('Y-m-d', strtotime("+1 day", $currentDate)); // Exemple de date de fin
+
+            // Enregistrement de l'événement
+            $event->save($user);
+
+            // Incrémentation de la date en fonction de l'unité de fréquence
+            switch ($this->frequency_unit) {
+                case 'week':
+                    $currentDate = strtotime("+{$this->frequency} week", $currentDate);
+                    break;
+                case 'month':
+                    $currentDate = strtotime("+{$this->frequency} month", $currentDate);
+                    break;
+                case 'year':
+                    $currentDate = strtotime("+{$this->frequency} year", $currentDate);
+                    break;
+                case 'day':
+                default:
+                    $currentDate = strtotime("+{$this->frequency} day", $currentDate);
+                    break;
+            }
+
+            $count++;
+        }
     }
 }

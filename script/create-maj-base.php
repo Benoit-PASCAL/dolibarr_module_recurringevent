@@ -31,3 +31,23 @@ dol_include_once('/recurringevent/class/recurringevent.class.php');
 
 $o=new RecurringEvent($db);
 $o->init_db_by_vars();
+
+// {{ edit_1 }} : Ajout de la colonne 'number' pour définir le nombre de récurrences
+$sql = "CREATE TABLE ".MAIN_DB_PREFIX."recurringevent (
+    rowid int PRIMARY KEY AUTO_INCREMENT,
+    entity int NOT NULL,
+    fk_actioncomm int NOT NULL,
+    fk_actioncomm_master int DEFAULT 0,
+    frequency int NOT NULL,
+    frequency_unit varchar(50) NOT NULL,
+    weekday_repeat text,
+    end_type varchar(30) NOT NULL,
+    end_date date,
+    end_occurrence int,
+    actioncomm_datep date,
+    actioncomm_datef date,
+    import_key varchar(14),
+    number int DEFAULT 1,
+    locked tinyint(1) DEFAULT 0, // {{ edit_2 }} Ajout de la colonne 'locked' pour verrouiller la récurrence
+    /* autres champs */
+) ENGINE=InnoDB;";
