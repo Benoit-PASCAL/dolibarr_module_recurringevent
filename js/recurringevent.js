@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Fonction pour gérer la modification de l'unité de fréquence
+    // Function to handle the change of frequency unit
     function handleFrequencyUnitChange(unit) {
         var dayOfWeekField = document.getElementById("recurring-day-of-week");
         if (unit === "week") {
@@ -9,43 +9,43 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Écouteur pour le changement d'unité de fréquence
+    // Listener for frequency unit change
     var frequencyUnitSelect = document.querySelector("select[name='frequency_unit']");
     if (frequencyUnitSelect) {
         frequencyUnitSelect.addEventListener("change", function() {
             handleFrequencyUnitChange(this.value);
         });
 
-        // Initialisation en fonction de la valeur actuelle
+        // Initialize based on the current value
         handleFrequencyUnitChange(frequencyUnitSelect.value);
     }
 
-    // Fonction pour gérer la sélection de la date
+    // Function to handle date selection
     function handleDateSelection(selectedDate) {
         var isLocked = document.getElementById("recurrence_locked").value;
         if (isLocked === "1") {
-            console.log("La récurrence est verrouillée. Les actions JS sont désactivées.");
+            console.log("Recurrence is locked. JS actions are disabled.");
             return;
         }
-        // Logique additionnelle basée sur la date sélectionnée
-        console.log("Date sélectionnée :", selectedDate);
-        // Exemple : Mettre à jour le jour de la semaine sélectionné
+        // Additional logic based on the selected date
+        console.log("Selected date:", selectedDate);
+        // Example: Update the selected day of the week
         var date = new Date(selectedDate);
-        var dayOfWeek = date.getDay(); // 0 = Dimanche, 1 = Lundi, etc.
+        var dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
         var checkbox = document.querySelector("input[name='weekday_repeat[]'][value='" + dayOfWeek + "']");
         if (checkbox) {
             checkbox.checked = true;
         }
     }
 
-    // Ajout d'un écouteur d'événement pour la sélection de la date de fin
+    // Add an event listener for the end date selection
     var endDateInput = document.querySelector("input[name='end_date']");
     if (endDateInput) {
         endDateInput.addEventListener("change", function() {
             handleDateSelection(this.value);
         });
 
-        // Initialisation en fonction de la valeur actuelle
+        // Initialize based on the current value
         if (endDateInput.value) {
             handleDateSelection(endDateInput.value);
         }
@@ -92,13 +92,13 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log("Recurrence has been reset.");
     }
 
-    // Ajouter un écouteur pour le bouton de réinitialisation
+    // Add a listener for the reset button
     var resetButton = document.getElementById("reset-recurrence-button");
     if (resetButton) {
         resetButton.addEventListener("click", resetRecurrence);
     }
 
-    // Désactiver les champs si la récurrence est verrouillée
+    // Disable fields if recurrence is locked
     var isLocked = document.getElementById("recurrence_locked").value;
     if (isLocked === "1") {
         document.getElementById("toggle-recurrence").disabled = true;
