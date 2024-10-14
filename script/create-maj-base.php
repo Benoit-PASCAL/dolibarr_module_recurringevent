@@ -29,10 +29,10 @@ if(!defined('INC_FROM_DOLIBARR')) {
 
 dol_include_once('/recurringevent/class/recurringevent.class.php');
 
-$o=new RecurringEvent($db);
+$o = new RecurringEvent($db);
 $o->init_db_by_vars();
 
-// {{ edit_1 }} : Ajout de la colonne 'number' pour définir le nombre de récurrences
+// {{ edit_2 }} : Ajout de la colonne 'locked' pour verrouiller la récurrence
 $sql = "CREATE TABLE ".MAIN_DB_PREFIX."recurringevent (
     rowid int PRIMARY KEY AUTO_INCREMENT,
     entity int NOT NULL,
@@ -47,7 +47,14 @@ $sql = "CREATE TABLE ".MAIN_DB_PREFIX."recurringevent (
     actioncomm_datep date,
     actioncomm_datef date,
     import_key varchar(14),
-    number int DEFAULT 1,
-    locked tinyint(1) DEFAULT 0, // {{ edit_2 }} Ajout de la colonne 'locked' pour verrouiller la récurrence
+    locked tinyint(1) DEFAULT 0, // Ajout de la colonne 'locked' pour verrouiller la récurrence
     /* autres champs */
 ) ENGINE=InnoDB;";
+
+$result = $db->query($sql);
+if ($result) {
+	echo "Table ".MAIN_DB_PREFIX."recurringevent créée ou mise à jour avec succès.\n";
+} else {
+	echo "Erreur lors de la création ou de la mise à jour de la table ".MAIN_DB_PREFIX."recurringevent : ".$db->error."\n";
+}
+?>

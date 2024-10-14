@@ -267,7 +267,7 @@ else
             // Include the external JavaScript file
             print '<script src="'.DOL_URL_ROOT.'/custom/recurringevent/js/recurringevent.js"></script>';
         }
-        else
+        elseif ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create')))
         {
             $head = recurringevent_prepare_head($object);
             $picto = 'recurringevent@recurringevent';

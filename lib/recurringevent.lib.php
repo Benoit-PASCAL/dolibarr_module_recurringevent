@@ -129,10 +129,69 @@ function getFormConfirmRecurringEvent($form, $object, $action)
  */
 function resetRecurringEvent(RecurringEvent $object, $selectedDate)
 {
-    if ($object->locked) return;
+    global $user, $langs;
 
+    if ($object->locked) {
+        echo json_encode(['success' => false, 'message' => $langs->trans('EventIsLocked')]);
+        exit;
+    }
+
+    // Vérifier les permissions de l'utilisateur
+    if (empty($user->rights->recurringevent->write)) {
+        echo json_encode(['success' => false, 'message' => $langs->trans('InsufficientPermissions')]);
+        exit;
+    }
+
+    // Validation de la date sélectionnée
+    if ($selectedDate < strtotime('today')) {
+        echo json_encode(['success' => false, 'message' => $langs->trans('InvalidSelectedDate')]);
+        exit;
+    }
+
+    // Réinitialisation des paramètres de récurrence
     $object->frequency_unit = 'day'; // Exemple : réinitialisation à une fréquence quotidienne
     $object->frequency = 1;
     $object->date_recurrence = $selectedDate;
-    $object->save($user);
+
+    // Sauvegarder l'objet
+    if ($object->save($user)) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => $langs->trans('FailedToSaveEvent')]);
+    }
+    exit;
+}
+
+// Gestion des requêtes AJAX
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Récupérer le contenu brut de la requête
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    if (isset($input['action']) && $input['action'] === 'resetRecurringEvent') {
+        // Valider les données reçues
+        if (!isset($input['id']) || !isset($input['selectedDate'])) {
+            echo json_encode(['success' => false, 'message' => 'Données manquantes.']);
+            exit;
+        }
+
+        // Sécuriser les entrées
+        $eventId = intval($input['id']);
+        $selectedDate = intval(strtotime($input['selectedDate']));
+
+        // Inclure la classe RecurringEvent
+        if (!class_exists('RecurringEvent')) {
+            require_once DOL_DOCUMENT_ROOT . '/recurringevent/class/recurringevent.class.php';
+        }
+
+        // Charger l'objet RecurringEvent
+        $object = new RecurringEvent($eventId);
+
+        if ($object->id > 0) {
+            // Appeler la fonction de réinitialisation
+            resetRecurringEvent($object, $selectedDate);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Événement non trouvé.']);
+            exit;
+        }
+    }
 }
