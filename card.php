@@ -191,6 +191,9 @@ $form = new Form($db);
 $title=$langs->trans('RecurringEvent');
 llxHeader('', $title);
 
+
+print '<script src="'.DOL_URL_ROOT.'/custom/recurringevent/js/recurringevent_custom.js"></script>';
+
 if ($action == 'create')
 {
     print load_fiche_titre($langs->trans('NewRecurringEvent'), '', 'recurringevent@recurringevent');
@@ -209,6 +212,12 @@ if ($action == 'create')
 
     // Other attributes
     include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_add.tpl.php';
+
+    
+    echo '<tr>';
+    echo '<td><label for="num_occurrences">'.$langs->trans('NumberOfOccurrences').'</label></td>';
+    echo '<td><input type="number" id="num_occurrences" name="num_occurrences" value="'.($object->num_occurrences ?? 1).'" min="1"></td>';
+    echo '</tr>';
 
     print '</table>'."\n";
 
@@ -398,3 +407,6 @@ else
 
 llxFooter();
 $db->close();
+
+
+

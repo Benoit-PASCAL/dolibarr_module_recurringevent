@@ -600,4 +600,15 @@ class RecurringEvent extends SeedObject
         $re->skip_generate_recurring = true;
         $re->save($user, $notrigger);
     }
+
+    public function createRecurringEvents($user, $notrigger, $actioncommMaster, $current_date, $delta)
+    {
+        $numOccurrences = GETPOST('num_occurrences', 'int') ?: 1;
+
+        for ($i = 0; $i < $numOccurrences; $i++) {
+            // Existing logic for creating a recurring event
+            $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
+            $current_date = strtotime('+'.$this->frequency.' '.$this->frequency_unit, $current_date);
+        }
+    }
 }
