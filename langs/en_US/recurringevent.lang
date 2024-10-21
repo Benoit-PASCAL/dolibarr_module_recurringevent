@@ -21,3 +21,24 @@ RecurringEventThursdayShort = Thursday
 RecurringEventFridayShort = Friday
 RecurringEventSaturdayShort = Saturday
 RecurringEventSundayShort = Sunday
+
+# Hook externalaccess for agefodd
+RecurringEventDefineEventAsRecurrent=Define recurrence options
+RecurringEventRepeatEventEach=Repeat every
+RecurringEventRepeatEventEachDay=Day(s)
+RecurringEventRepeatEventEachWeek=Week(s)
+RecurringEventRepeatEventEachMonth=Month(s)
+RecurringEventRepeatEventEachYear=Year(s)
+RecurringEventRepeatThe=Repeat on:
+RecurringEventResetFirstDay=Reset first day
+RecurringEventFinishAt=Ends:
+RecurringEventThe=On
+RecurringEventAfter=After
+RecurringEventoccurrences=occurrences
+RecurringEventMondayShort=Mon.
+RecurringEventTuesdayShort=Tue.
+RecurringEventWednesdayShort=Wed.
+RecurringEventThursdayShort=Thu.
+RecurringEventFridayShort=Fri.
+RecurringEventSaturdayShort=Sat.
+RecurringEventSundayShort=Sun.

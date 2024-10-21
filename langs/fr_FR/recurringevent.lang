@@ -25,6 +25,7 @@ RecurringEventRepeatEventEachWeek=Semaine(s)
 RecurringEventRepeatEventEachMonth=Mois
 RecurringEventRepeatEventEachYear=Année(s)
 RecurringEventRepeatThe=Répéter le :
+RecurringEventResetFirstDay=Réinitialiser le premier jour
 RecurringEventFinishAt=Se termine :
 RecurringEventThe=Le
 RecurringEventAfter=Après
