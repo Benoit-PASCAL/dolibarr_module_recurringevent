@@ -56,3 +56,23 @@
         });
     }
 });
+
+$(document).ready(function() {
+    const resetButton = $('#reset_recurrence_btn');
+    if (resetButton.length) {
+        resetButton.css('cursor', 'pointer'); // Indiquer que c'est cliquable
+        resetButton.on('click', function(event) {
+            event.preventDefault();
+            // Logique de réinitialisation
+            resetRecurringEvent();
+        });
+    }
+
+    function resetRecurringEvent() {
+        // Implémentez la logique de réinitialisation ici
+        console.log('Bouton de réinitialisation cliqué.');
+        // Exemple : Réinitialiser les champs de formulaire
+        $('#ap').val('');
+        $('#customCheckLun, #customCheckMar, #customCheckMer, #customCheckJeu, #customCheckVen, #customCheckSam, #customCheckDim').prop('checked', false);
+    }
+});

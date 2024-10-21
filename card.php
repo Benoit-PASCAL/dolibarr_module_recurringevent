@@ -192,6 +192,7 @@ $title=$langs->trans('RecurringEvent');
 llxHeader('', $title);
 
 
+print '<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>';
 print '<script src="'.DOL_URL_ROOT.'/custom/recurringevent/js/recurringevent_custom.js"></script>';
 
 if ($action == 'create')
@@ -407,6 +408,7 @@ else
 
 llxFooter();
 $db->close();
+
 
 
 
