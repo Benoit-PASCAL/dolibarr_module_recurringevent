@@ -137,7 +137,12 @@ class ActionsRecurringEvent
                 </tr>
 
                 <tr id="recurring-day-of-week" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) ? '' : 'hideobject') . '">
-                    <td class="">' . $langs->trans('RecurringEventRepeatThe') . '</td>
+                    <td class="">' . $langs->trans('RecurringEventRepeatThe') . ' 
+                        <br>
+                        <a href="#" id="reset_recurrence_btn" >
+                            <span class="fa fa-sync valignmiddle paddingleft" title="'.$langs->trans("RecurringEventResetFirstDay").'"></span>
+                        </a>
+                    </td>
                     <td id="" class="" colspan="3">
                         <div class="pull-left minwidth100">
                             <div class="form-check custom-control custom-checkbox">
@@ -255,12 +260,17 @@ class ActionsRecurringEvent
             let isModified = $isModified;
             let elDateSelector = $('#ap');
             let elDaysChecboxes = $('#customCheckLun, #customCheckMar, #customCheckMer, #customCheckJeu, #customCheckVen, #customCheckSam, #customCheckDim');
+            let elResetButton = $('#reset_recurrence_btn');
             
             const findWeekDate = (date) => {
                 date = date.split('/').reverse().join('-');
                 
                 const d = new Date(date);
                 return d.getDay();
+            }
+            
+            const getWeekDate = () => {
+                return elDateSelector.valueOf();
             }
             
             const checkDayBox = (findWeekDay) => {
@@ -280,6 +290,11 @@ class ActionsRecurringEvent
                 }
             } 
             
+            const resetRecurringEvent = () => {
+                const selectedDate = getWeekDate();
+                checkDayBox(selectedDate);
+            }
+            
             const handleDateSelectorChange = (event) => {
                 let weekDay = findWeekDate(event.target.value);
                 
@@ -290,12 +305,17 @@ class ActionsRecurringEvent
                 elDateSelector.off('change');
             }
             
+            const resetButtonHandler = () => {
+                resetRecurringEvent();
+            }
+
             const dynamicCheckboxesHandler = () => {
                 if(!isModified)
                 {
                     elDateSelector.on('change', handleDateSelectorChange);
                     elDaysChecboxes.on('change', handleManualCheckboxChange);
                 }
+                elResetButton.on('click', resetButtonHandler);
             }
             
             $(document).ready(dynamicCheckboxesHandler);
@@ -465,3 +485,8 @@ JS;
         return 0;
     }
 }
+
+
+
+
+
