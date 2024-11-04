@@ -115,28 +115,19 @@ class ActionsRecurringEvent
                     </td>
                 </tr>
 
-                <tr id="recurringevent-select-weekday" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) ? '' : 'hideobject') . '">
-                    <td class="">' . $langs->trans('RecurringEventRepeatEventEach') . '</td>
+                <tr>
+                    <td class="">' . $langs->trans('RecurringEventFrequencyUnit') . '</td>
                     <td id="" class="action_extras_agf_site" colspan="3">
-                        <input type="number" class="form-control maxwidth50" value="' . (!empty($recurringEvent->id) ? $recurringEvent->frequency : 1) . '" name="frequency" size="4" />
-                        <select id="frequency_unit" name="frequency_unit" class="custom-select d-block w-100" onchange="if (this.value !== \'week\') { $(\'#recurring-day-of-week\').addClass(\'menuhider\'); } else { $(\'#recurring-day-of-week\').removeClass(\'menuhider\'); }">
-                            <option value="day" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'day' ? 'selected' : '') . '>' . $langs->trans(
-                'RecurringEventRepeatEventEachDay'
-            ) . '</option>
-                            <option value="week"  ' . ((!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'week' || empty($recurringEvent->id)) ? 'selected' : '') . '>' . $langs->trans(
-                'RecurringEventRepeatEventEachWeek'
-            ) . '</option>
-                            <option value="month" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'month' ? 'selected' : '') . '>' . $langs->trans(
-                'RecurringEventRepeatEventEachMonth'
-            ) . '</option>
-                            <option value="year" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'year' ? 'selected' : '') . '>' . $langs->trans(
-                'RecurringEventRepeatEventEachYear'
-            ) . '</option>
+                        <select id="frequency_unit" name="frequency_unit" class="custom-select d-block w-100" onchange="toggleRecurringOptions()">
+                            <option value="day" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'day' ? 'selected' : '') . '>' . $langs->trans('RecurringEventDay') . '</option>
+                            <option value="week" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'week' ? 'selected' : '') . '>' . $langs->trans('RecurringEventWeek') . '</option>
+                            <option value="month" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'month' ? 'selected' : '') . '>' . $langs->trans('RecurringEventMonth') . '</option>
+                            <option value="year" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'year' ? 'selected' : '') . '>' . $langs->trans('RecurringEventYear') . '</option>
                         </select>
                     </td>
                 </tr>
 
-                <tr id="recurring-day-of-week" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) ? '' : 'hideobject') . '">
+                <tr id="recurring-days-of-week" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) && ($recurringEvent->frequency_unit == 'day' || $recurringEvent->frequency_unit == 'week') ? '' : 'hideobject') . '">
                     <td class="">' . $langs->trans('RecurringEventRepeatThe') . ' 
                         <br>
                         <a href="#" id="reset_recurrence_btn" >
@@ -215,6 +206,57 @@ class ActionsRecurringEvent
                     </td>
                 </tr>
 
+                <tr id="recurring-months" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'month' ? '' : 'hideobject') . '">
+                    <td class="">' . $langs->trans('RecurringEventRepeatOnMonths') . '</td>
+                    <td id="" class="action_extras_agf_site" colspan="3">
+                        <div id="recurring-months" class="form-group pl-4 ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'month' ? '' : 'd-none') . '">
+                            <div class="form-row">
+                                <label for="month_day" class="col-sm-2 col-form-label">' . $langs->trans('RecurringEventRepeatOnDay') . '</label>
+                                <div class="col-sm-10">
+                                    <select id="month_day" name="month_day" class="custom-select">
+                                        ' . implode('', array_map(function ($day) use ($recurringEvent) {
+                                            return '<option value="' . $day . '" ' . (!empty($recurringEvent->id) && $recurringEvent->month_day == $day ? 'selected' : '') . '>' . $day . '</option>';
+                                        }, range(1, 31))) . '
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr id="recurring-years" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'year' ? '' : 'hideobject') . '">
+                    <td class="">' . $langs->trans('RecurringEventRepeatOnYears') . '</td>
+                    <td id="" class="action_extras_agf_site" colspan="3">
+                        <div class="form-row">
+                            <div class="col-sm-6">
+                                <select id="year_month" name="year_month" class="custom-select">
+                                    <option value="">' . $langs->trans('RecurringEventMonth') . '</option>
+                                    <option value="1" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 1 ? 'selected' : '') . '>' . $langs->trans('January') . '</option>
+                                    <option value="2" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 2 ? 'selected' : '') . '>' . $langs->trans('February') . '</option>
+                                    <option value="3" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 3 ? 'selected' : '') . '>' . $langs->trans('March') . '</option>
+                                    <option value="4" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 4 ? 'selected' : '') . '>' . $langs->trans('April') . '</option>
+                                    <option value="5" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 5 ? 'selected' : '') . '>' . $langs->trans('May') . '</option>
+                                    <option value="6" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 6 ? 'selected' : '') . '>' . $langs->trans('June') . '</option>
+                                    <option value="7" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 7 ? 'selected' : '') . '>' . $langs->trans('July') . '</option>
+                                    <option value="8" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 8 ? 'selected' : '') . '>' . $langs->trans('August') . '</option>
+                                    <option value="9" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 9 ? 'selected' : '') . '>' . $langs->trans('September') . '</option>
+                                    <option value="10" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 10 ? 'selected' : '') . '>' . $langs->trans('October') . '</option>
+                                    <option value="11" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 11 ? 'selected' : '') . '>' . $langs->trans('November') . '</option>
+                                    <option value="12" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 12 ? 'selected' : '') . '>' . $langs->trans('December') . '</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <select id="year_day" name="year_day" class="custom-select">
+                                    <option value="">' . $langs->trans('RecurringEventDay') . '</option>
+                                    ' . implode('', array_map(function ($day) use ($recurringEvent) {
+                                        return '<option value="' . $day . '" ' . (!empty($recurringEvent->id) && $recurringEvent->year_day == $day ? 'selected' : '') . '>' . $day . '</option>';
+                                    }, range(1, 31))) . '
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
                 <tr id="" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) ? '' : 'hideobject') . '">
                     <td class="">' . $langs->trans('RecurringEventFinishAt') . '</td>
                     <td id="" class="action_extras_agf_site" colspan="3">
@@ -245,6 +287,32 @@ class ActionsRecurringEvent
             ';
 
         $this->addJsToUpdateCheckedBoxes($recurringEvent);
+
+        $this->resprints .= <<<JS
+        <script>
+        $(document).ready(function() {
+            // Afficher/masquer les jours de la semaine selon les cases cochées
+            function toggleWeekdays() {
+                if ($('#frequency_unit_week').is(':checked') || $('#frequency_unit_day').is(':checked')) {
+                    $('#recurring-day-of-week').removeClass('hideobject');
+                } else {
+                    $('#recurring-day-of-week').addClass('hideobject');
+                }
+            }
+            
+            // Au chargement et au changement des cases �� cocher
+            toggleWeekdays();
+            $('input[name="frequency_unit[]"]').change(toggleWeekdays);
+        });
+
+        function toggleRecurringOptions() {
+            var frequencyUnit = $('#frequency_unit').val();
+            $('#recurring-days-of-week').toggleClass('hideobject', frequencyUnit !== 'day' && frequencyUnit !== 'week');
+            $('#recurring-months').toggleClass('hideobject', frequencyUnit !== 'month');
+            $('#recurring-years').toggleClass('hideobject', frequencyUnit !== 'year');
+        }
+        </script>
+    JS;
 
         return 0;
     }
@@ -476,6 +544,59 @@ JS;
                             </div>
                         </div>
                     </fieldset>
+
+                    <div id="recurring-months" class="form-group pl-4 ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'month' ? '' : 'd-none') . '">
+                        <div class="form-row">
+                            <label for="month_day" class="col-sm-2 col-form-label">' . $langs->trans('RecurringEventRepeatOnDay') . '</label>
+                            <div class="col-sm-10">
+                                <select id="month_day" name="month_day" class="custom-select">
+                                    ' . implode('', array_map(function ($day) use ($recurringEvent) {
+                                        return '<option value="' . $day . '" ' . (!empty($recurringEvent->id) && $recurringEvent->month_day == $day ? 'selected' : '') . '>' . $day . '</option>';
+                                    }, range(1, 31))) . '
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="recurring-years" class="form-group pl-4 ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'year' ? '' : 'd-none') . '">
+                        <div class="form-row">
+                            <label class="col-form-label col-sm-2 pt-0">' . $langs->trans('RecurringEventRepeatOnYears') . '</label>
+                            <div class="col-sm-10">
+                                <div class="form-row">
+                                    <div class="col-sm-6">
+                                        <select id="year_month" name="year_month" class="custom-select">
+                                            <option value="">' . $langs->trans('RecurringEventMonth') . '</option>
+                                            <option value="1" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 1 ? 'selected' : '') . '>' . $langs->trans('January') . '</option>
+                                            <option value="2" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 2 ? 'selected' : '') . '>' . $langs->trans('February') . '</option>
+                                            <option value="3" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 3 ? 'selected' : '') . '>' . $langs->trans('March') . '</option>
+                                            <option value="4" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 4 ? 'selected' : '') . '>' . $langs->trans('April') . '</option>
+                                            <option value="5" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 5 ? 'selected' : '') . '>' . $langs->trans('May') . '</option>
+                                            <option value="6" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 6 ? 'selected' : '') . '>' . $langs->trans('June') . '</option>
+                                            <option value="7" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 7 ? 'selected' : '') . '>' . $langs->trans('July') . '</option>
+                                            <option value="8" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 8 ? 'selected' : '') . '>' . $langs->trans('August') . '</option>
+                                            <option value="9" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 9 ? 'selected' : '') . '>' . $langs->trans('September') . '</option>
+                                            <option value="10" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 10 ? 'selected' : '') . '>' . $langs->trans('October') . '</option>
+                                            <option value="11" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 11 ? 'selected' : '') . '>' . $langs->trans('November') . '</option>
+                                            <option value="12" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 12 ? 'selected' : '') . '>' . $langs->trans('December') . '</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <select id="year_day" name="year_day" class="custom-select">
+                                            <option value="">' . $langs->trans('RecurringEventDay') . '</option>
+                                            ' . implode('', array_map(function ($day) use ($recurringEvent) {
+                                                return '<option value="' . $day . '" ' . (!empty($recurringEvent->id) && $recurringEvent->year_day == $day ? 'selected' : '') . '>' . $day . '</option>';
+                                            }, range(1, 31))) . '
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <fieldset class="form-group pl-4">
+                        ...
+                    </fieldset>
+                    ...
 
                 </div>
                 <!-- FIN form récurrence -->

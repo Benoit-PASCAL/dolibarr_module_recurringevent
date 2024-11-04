@@ -235,7 +235,7 @@ if ($action == 'create')
 else
 {
     if (empty($object->id))
-    {
+    {Error in request SELECT rowid as rowid, label FROM llx_scrumproject_scrumsprint WHERE 1=1 ORDER BY label Table 'llx_scrumproject_scrumsprint' doesn't exist. Check setup of extra parameters.
         $langs->load('errors');
         print $langs->trans('ErrorRecordNotFound');
     }

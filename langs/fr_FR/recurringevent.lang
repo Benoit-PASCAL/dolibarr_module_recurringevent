@@ -16,6 +16,7 @@ ParamHelp=Le contenu de l'aide
 
 #Card via hook
 RecurringEventSeparatorStart=Gestion de la récurrence
+RecurringEventFrequencyUnit=Unité de fréquence
 
 # Hook externalaccess for agefodd
 RecurringEventDefineEventAsRecurrent=Définir des options de récurrence
@@ -37,4 +38,11 @@ RecurringEventThursdayShort=Jeu.
 RecurringEventFridayShort=Ven.
 RecurringEventSaturdayShort=Sam.
 RecurringEventSundayShort=Dim.
+RecurringEventMonth=Répéter les mois
+RecurringEventDay=Répéter le jour
+RecurringEventRepeatOnYears=Répéter les années
+RecurringEventYear=Répéter Année
+RecurringEventWeek=Répéter les semaines
+Repeat on day= Répéter le jour
+RecurringEventRepeatOnDay=Repeat on day
 
