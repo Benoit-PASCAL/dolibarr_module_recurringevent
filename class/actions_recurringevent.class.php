@@ -211,13 +211,56 @@ class ActionsRecurringEvent
                     <td id="" class="action_extras_agf_site" colspan="3">
                         <div id="recurring-months" class="form-group pl-4 ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'month' ? '' : 'd-none') . '">
                             <div class="form-row">
-                                <label for="month_day" class="col-sm-2 col-form-label">' . $langs->trans('RecurringEventRepeatOnDay') . '</label>
+                                <legend class="col-form-label col-sm-2 pt-0">' . $langs->trans('RecurringEventRepeatOnMonths') . '</legend>
                                 <div class="col-sm-10">
-                                    <select id="month_day" name="month_day" class="custom-select">
-                                        ' . implode('', array_map(function ($day) use ($recurringEvent) {
-                                            return '<option value="' . $day . '" ' . (!empty($recurringEvent->id) && $recurringEvent->month_day == $day ? 'selected' : '') . '>' . $day . '</option>';
-                                        }, range(1, 31))) . '
-                                    </select>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_1" name="month_repeat[]" value="1" ' . (!empty($recurringEvent->id) && in_array(1, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_1">' . $langs->trans('January') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_2" name="month_repeat[]" value="2" ' . (!empty($recurringEvent->id) && in_array(2, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_2">' . $langs->trans('February') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_3" name="month_repeat[]" value="3" ' . (!empty($recurringEvent->id) && in_array(3, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_3">' . $langs->trans('March') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_4" name="month_repeat[]" value="4" ' . (!empty($recurringEvent->id) && in_array(4, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_4">' . $langs->trans('April') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_5" name="month_repeat[]" value="5" ' . (!empty($recurringEvent->id) && in_array(5, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_5">' . $langs->trans('May') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_6" name="month_repeat[]" value="6" ' . (!empty($recurringEvent->id) && in_array(6, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_6">' . $langs->trans('June') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_7" name="month_repeat[]" value="7" ' . (!empty($recurringEvent->id) && in_array(7, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_7">' . $langs->trans('July') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_8" name="month_repeat[]" value="8" ' . (!empty($recurringEvent->id) && in_array(8, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_8">' . $langs->trans('August') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_9" name="month_repeat[]" value="9" ' . (!empty($recurringEvent->id) && in_array(9, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_9">' . $langs->trans('September') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_10" name="month_repeat[]" value="10" ' . (!empty($recurringEvent->id) && in_array(10, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_10">' . $langs->trans('October') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_11" name="month_repeat[]" value="11" ' . (!empty($recurringEvent->id) && in_array(11, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_11">' . $langs->trans('November') . '</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="month_12" name="month_repeat[]" value="12" ' . (!empty($recurringEvent->id) && in_array(12, (array)$recurringEvent->month_repeat) ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="month_12">' . $langs->trans('December') . '</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -228,30 +271,71 @@ class ActionsRecurringEvent
                     <td class="">' . $langs->trans('RecurringEventRepeatOnYears') . '</td>
                     <td id="" class="action_extras_agf_site" colspan="3">
                         <div class="form-row">
-                            <div class="col-sm-6">
-                                <select id="year_month" name="year_month" class="custom-select">
-                                    <option value="">' . $langs->trans('RecurringEventMonth') . '</option>
-                                    <option value="1" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 1 ? 'selected' : '') . '>' . $langs->trans('January') . '</option>
-                                    <option value="2" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 2 ? 'selected' : '') . '>' . $langs->trans('February') . '</option>
-                                    <option value="3" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 3 ? 'selected' : '') . '>' . $langs->trans('March') . '</option>
-                                    <option value="4" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 4 ? 'selected' : '') . '>' . $langs->trans('April') . '</option>
-                                    <option value="5" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 5 ? 'selected' : '') . '>' . $langs->trans('May') . '</option>
-                                    <option value="6" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 6 ? 'selected' : '') . '>' . $langs->trans('June') . '</option>
-                                    <option value="7" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 7 ? 'selected' : '') . '>' . $langs->trans('July') . '</option>
-                                    <option value="8" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 8 ? 'selected' : '') . '>' . $langs->trans('August') . '</option>
-                                    <option value="9" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 9 ? 'selected' : '') . '>' . $langs->trans('September') . '</option>
-                                    <option value="10" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 10 ? 'selected' : '') . '>' . $langs->trans('October') . '</option>
-                                    <option value="11" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 11 ? 'selected' : '') . '>' . $langs->trans('November') . '</option>
-                                    <option value="12" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 12 ? 'selected' : '') . '>' . $langs->trans('December') . '</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-6">
-                                <select id="year_day" name="year_day" class="custom-select">
-                                    <option value="">' . $langs->trans('RecurringEventDay') . '</option>
-                                    ' . implode('', array_map(function ($day) use ($recurringEvent) {
-                                        return '<option value="' . $day . '" ' . (!empty($recurringEvent->id) && $recurringEvent->year_day == $day ? 'selected' : '') . '>' . $day . '</option>';
-                                    }, range(1, 31))) . '
-                                </select>
+                            <legend class="col-form-label col-sm-2 pt-0">' . $langs->trans('RecurringEventRepeatOnYears') . '</legend>
+                            <div class="col-sm-10">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_1" name="year_month[]" value="1" ' . (!empty($recurringEvent->id) && in_array(1, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_1">' . $langs->trans('January') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_2" name="year_month[]" value="2" ' . (!empty($recurringEvent->id) && in_array(2, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_2">' . $langs->trans('February') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_3" name="year_month[]" value="3" ' . (!empty($recurringEvent->id) && in_array(3, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_3">' . $langs->trans('March') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_4" name="year_month[]" value="4" ' . (!empty($recurringEvent->id) && in_array(4, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_4">' . $langs->trans('April') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_5" name="year_month[]" value="5" ' . (!empty($recurringEvent->id) && in_array(5, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_5">' . $langs->trans('May') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_6" name="year_month[]" value="6" ' . (!empty($recurringEvent->id) && in_array(6, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_6">' . $langs->trans('June') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_7" name="year_month[]" value="7" ' . (!empty($recurringEvent->id) && in_array(7, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_7">' . $langs->trans('July') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_8" name="year_month[]" value="8" ' . (!empty($recurringEvent->id) && in_array(8, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_8">' . $langs->trans('August') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_9" name="year_month[]" value="9" ' . (!empty($recurringEvent->id) && in_array(9, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_9">' . $langs->trans('September') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_10" name="year_month[]" value="10" ' . (!empty($recurringEvent->id) && in_array(10, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_10">' . $langs->trans('October') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_11" name="year_month[]" value="11" ' . (!empty($recurringEvent->id) && in_array(11, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_11">' . $langs->trans('November') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_12" name="year_month[]" value="12" ' . (!empty($recurringEvent->id) && in_array(12, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_12">' . $langs->trans('December') . '</label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="year_day">' . $langs->trans('RecurringEventDay') . '</label>
+                                    <select id="year_day" name="year_day" class="form-control">
+                                        <option value="">' . $langs->trans('RecurringEventDay') . '</option>
+                                        ' . implode('', array_map(function ($day) use ($recurringEvent) {
+                                            return '<option value="' . $day . '" ' . (!empty($recurringEvent->id) && $recurringEvent->year_day == $day ? 'selected' : '') . '>' . $day . '</option>';
+                                        }, range(1, 31))) . '
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="year_reset_first_day" name="year_reset_first_day" value="1" ' . (!empty($recurringEvent->id) && $recurringEvent->year_reset_first_day ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="year_reset_first_day">' . $langs->trans('RecurringEventResetFirstDay') . '</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </td>
@@ -300,7 +384,7 @@ class ActionsRecurringEvent
                 }
             }
             
-            // Au chargement et au changement des cases �� cocher
+            // Au chargement et au changement des cases  cocher
             toggleWeekdays();
             $('input[name="frequency_unit[]"]').change(toggleWeekdays);
         });
@@ -547,46 +631,86 @@ JS;
 
                     <div id="recurring-months" class="form-group pl-4 ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'month' ? '' : 'd-none') . '">
                         <div class="form-row">
-                            <label for="month_day" class="col-sm-2 col-form-label">' . $langs->trans('RecurringEventRepeatOnDay') . '</label>
+                            <legend class="col-form-label col-sm-2 pt-0">' . $langs->trans('RecurringEventRepeatOnMonths') . '</legend>
                             <div class="col-sm-10">
-                                <select id="month_day" name="month_day" class="custom-select">
-                                    ' . implode('', array_map(function ($day) use ($recurringEvent) {
-                                        return '<option value="' . $day . '" ' . (!empty($recurringEvent->id) && $recurringEvent->month_day == $day ? 'selected' : '') . '>' . $day . '</option>';
-                                    }, range(1, 31))) . '
-                                </select>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_day_1" name="month_day[]" value="1" ' . (!empty($recurringEvent->id) && in_array(1, (array)$recurringEvent->month_day) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_day_1">1</label>
+                                </div>
+                                ...
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_day_31" name="month_day[]" value="31" ' . (!empty($recurringEvent->id) && in_array(31, (array)$recurringEvent->month_day) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_day_31">31</label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div id="recurring-years" class="form-group pl-4 ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'year' ? '' : 'd-none') . '">
                         <div class="form-row">
-                            <label class="col-form-label col-sm-2 pt-0">' . $langs->trans('RecurringEventRepeatOnYears') . '</label>
+                            <legend class="col-form-label col-sm-2 pt-0">' . $langs->trans('RecurringEventRepeatOnYears') . '</legend>
                             <div class="col-sm-10">
-                                <div class="form-row">
-                                    <div class="col-sm-6">
-                                        <select id="year_month" name="year_month" class="custom-select">
-                                            <option value="">' . $langs->trans('RecurringEventMonth') . '</option>
-                                            <option value="1" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 1 ? 'selected' : '') . '>' . $langs->trans('January') . '</option>
-                                            <option value="2" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 2 ? 'selected' : '') . '>' . $langs->trans('February') . '</option>
-                                            <option value="3" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 3 ? 'selected' : '') . '>' . $langs->trans('March') . '</option>
-                                            <option value="4" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 4 ? 'selected' : '') . '>' . $langs->trans('April') . '</option>
-                                            <option value="5" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 5 ? 'selected' : '') . '>' . $langs->trans('May') . '</option>
-                                            <option value="6" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 6 ? 'selected' : '') . '>' . $langs->trans('June') . '</option>
-                                            <option value="7" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 7 ? 'selected' : '') . '>' . $langs->trans('July') . '</option>
-                                            <option value="8" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 8 ? 'selected' : '') . '>' . $langs->trans('August') . '</option>
-                                            <option value="9" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 9 ? 'selected' : '') . '>' . $langs->trans('September') . '</option>
-                                            <option value="10" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 10 ? 'selected' : '') . '>' . $langs->trans('October') . '</option>
-                                            <option value="11" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 11 ? 'selected' : '') . '>' . $langs->trans('November') . '</option>
-                                            <option value="12" ' . (!empty($recurringEvent->id) && $recurringEvent->year_month == 12 ? 'selected' : '') . '>' . $langs->trans('December') . '</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <select id="year_day" name="year_day" class="custom-select">
-                                            <option value="">' . $langs->trans('RecurringEventDay') . '</option>
-                                            ' . implode('', array_map(function ($day) use ($recurringEvent) {
-                                                return '<option value="' . $day . '" ' . (!empty($recurringEvent->id) && $recurringEvent->year_day == $day ? 'selected' : '') . '>' . $day . '</option>';
-                                            }, range(1, 31))) . '
-                                        </select>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_1" name="year_month[]" value="1" ' . (!empty($recurringEvent->id) && in_array(1, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_1">' . $langs->trans('January') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_2" name="year_month[]" value="2" ' . (!empty($recurringEvent->id) && in_array(2, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_2">' . $langs->trans('February') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_3" name="year_month[]" value="3" ' . (!empty($recurringEvent->id) && in_array(3, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_3">' . $langs->trans('March') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_4" name="year_month[]" value="4" ' . (!empty($recurringEvent->id) && in_array(4, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_4">' . $langs->trans('April') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_5" name="year_month[]" value="5" ' . (!empty($recurringEvent->id) && in_array(5, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_5">' . $langs->trans('May') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_6" name="year_month[]" value="6" ' . (!empty($recurringEvent->id) && in_array(6, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_6">' . $langs->trans('June') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_7" name="year_month[]" value="7" ' . (!empty($recurringEvent->id) && in_array(7, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_7">' . $langs->trans('July') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_8" name="year_month[]" value="8" ' . (!empty($recurringEvent->id) && in_array(8, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_8">' . $langs->trans('August') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_9" name="year_month[]" value="9" ' . (!empty($recurringEvent->id) && in_array(9, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_9">' . $langs->trans('September') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_10" name="year_month[]" value="10" ' . (!empty($recurringEvent->id) && in_array(10, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_10">' . $langs->trans('October') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_11" name="year_month[]" value="11" ' . (!empty($recurringEvent->id) && in_array(11, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_11">' . $langs->trans('November') . '</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="month_12" name="year_month[]" value="12" ' . (!empty($recurringEvent->id) && in_array(12, (array)$recurringEvent->year_month) ? 'checked' : '') . '>
+                                    <label class="form-check-label" for="month_12">' . $langs->trans('December') . '</label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="year_day">' . $langs->trans('RecurringEventDay') . '</label>
+                                    <select id="year_day" name="year_day" class="form-control">
+                                        <option value="">' . $langs->trans('RecurringEventDay') . '</option>
+                                        ' . implode('', array_map(function ($day) use ($recurringEvent) {
+                                            return '<option value="' . $day . '" ' . (!empty($recurringEvent->id) && $recurringEvent->year_day == $day ? 'selected' : '') . '>' . $day . '</option>';
+                                        }, range(1, 31))) . '
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="year_reset_first_day" name="year_reset_first_day" value="1" ' . (!empty($recurringEvent->id) && $recurringEvent->year_reset_first_day ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="year_reset_first_day">' . $langs->trans('RecurringEventResetFirstDay') . '</label>
                                     </div>
                                 </div>
                             </div>
