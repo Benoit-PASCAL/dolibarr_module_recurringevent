@@ -136,7 +136,7 @@ class InterfaceRecurringEventtrigger
         switch ($action) {
             case 'ACTION_CREATE':
             case 'ACTION_MODIFY':
-                if (empty($object->context['recurringevent_skip_trigger_create'])) {
+                if (!empty($object->context['recurringevent_skip_trigger_create'])) {
                     break;
                 }
 
