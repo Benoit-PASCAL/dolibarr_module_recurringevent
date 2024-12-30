@@ -571,6 +571,14 @@ class RecurringEvent extends SeedObject
         return -1;
     }
 
+	/**
+	 * @param User $user Object
+	 * @param bool $notrigger false=launch triggers after, true=disable triggers
+	 * @param ActionComm $actioncommMaster Object
+	 * @param int $current_date timestamp
+	 * @param int $delta event duration in seconds
+	 * @return void
+	 */
     private function createRecurringsForPeriod($user, $notrigger, $actioncommMaster, $base_date, $delta)
     {
         $current_date = $base_date;
