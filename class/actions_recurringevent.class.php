@@ -262,58 +262,11 @@ class ActionsRecurringEvent
 		$this->resprints .= '<script type="text/javascript">';
 
 		$this->resprints .= <<<JS
+				let isModified = $isModified;
 
-            let isModified = $isModified;
-            let elDateSelector = $('#ap');
-            let elDaysChecboxes = $('#customCheckLun, #customCheckMar, #customCheckMer, #customCheckJeu, #customCheckVen, #customCheckSam, #customCheckDim');
-            
-            const findWeekDate = (date) => {
-                date = date.split('/').reverse().join('-');
-                
-                const d = new Date(date);
-                return d.getDay();
-            }
-            
-            const checkDayBox = (findWeekDay) => {
-                
-                let days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-                
-                days.forEach((day) => {
-                    let el = $('#customCheck' + day);
-                    if (el) {
-                        el.prop('checked', false);
-                    }
-                });
-                
-                let el = $('#customCheck' + days[findWeekDay]);
-                if (el) {
-                    el.prop('checked', true);
-                }
-            } 
-            
-            const handleDateSelectorChange = (event) => {
-                let weekDay = findWeekDate(event.target.value);
-                
-                checkDayBox(weekDay);
-            }
-            
-            const handleManualCheckboxChange = () => {
-                elDateSelector.off('change');
-            }
-            
-            const dynamicCheckboxesHandler = () => {
-                if(!isModified)
-                {
-                    elDateSelector.on('change', handleDateSelectorChange);
-                    elDaysChecboxes.on('change', handleManualCheckboxChange);
-                }
-            }
-            
-            $(document).ready(dynamicCheckboxesHandler);
-
-JS;
-
+				JS;
 		$this->resprints .= '</script>';
+		$this->resprints .= '<script type="text/javascript" src="' . dol_buildpath('/recurringevent/js/select-checkbox.js.php?force_use_js=1', 1) . '"></script>';
 	}
 
 	private function formObjectExternalAccess(CommonObject &$object): int
