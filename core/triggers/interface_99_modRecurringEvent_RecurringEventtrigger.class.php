@@ -29,14 +29,13 @@
  *                - The name property name must be Mytrigger
  */
 
+require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
+
 /**
  * Trigger class
  */
-class InterfaceRecurringEventtrigger
+class InterfaceRecurringEventtrigger extends DolibarrTriggers
 {
-
-    private $db;
-
     /**
      * Constructor
      *
@@ -151,10 +150,15 @@ class InterfaceRecurringEventtrigger
                     if (!defined('INC_FROM_DOLIBARR')) {
                         define('INC_FROM_DOLIBARR', 1);
                     }
-                    dol_include_once('recurringevent/class/recurringevent.class.php');
+                    include_once dirname(__DIR__, 2) . '/class/recurringevent.class.php';
 
                     $recurringEvent = new RecurringEvent($this->db);
-                    $recurringEvent->fetchBy($object->id, 'fk_actioncomm');
+                    $res = $recurringEvent->fetchBy($object->id, 'fk_actioncomm');
+
+                    if ($res < 0) {
+                        $this->errors = $recurringEvent->errors;
+                        return $res;
+                    }
 
                     $recurringEvent->entity = $conf->entity;
                     $recurringEvent->fk_actioncomm = $object->id;
@@ -172,7 +176,7 @@ class InterfaceRecurringEventtrigger
                     if (!defined('INC_FROM_DOLIBARR')) {
                         define('INC_FROM_DOLIBARR', 1);
                     }
-                    dol_include_once('recurringevent/class/recurringevent.class.php');
+                    include_once dirname(__DIR__, 2) . '/class/recurringevent.class.php';
                     $recurringEvent = new RecurringEvent($this->db);
                     if ($recurringEvent->fetchBy($object->id, 'fk_actioncomm') > 0) {
                         $recurringEvent->delete($user);
@@ -183,7 +187,7 @@ class InterfaceRecurringEventtrigger
                 if (!defined('INC_FROM_DOLIBARR')) {
                     define('INC_FROM_DOLIBARR', 1);
                 }
-                dol_include_once('recurringevent/class/recurringevent.class.php');
+                include_once dirname(__DIR__, 2) . '/class/recurringevent.class.php';
                 $recurringEvent = new RecurringEvent($this->db);
                 if ($recurringEvent->fetchBy($object->id, 'fk_actioncomm') > 0) {
                     $recurringEvent->delete($user);

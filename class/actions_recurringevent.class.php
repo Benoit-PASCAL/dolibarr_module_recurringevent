@@ -99,9 +99,16 @@ class ActionsRecurringEvent
 		if (!defined('INC_FROM_DOLIBARR')) {
 			define('INC_FROM_DOLIBARR', 1);
 		}
-		dol_include_once('recurringevent/class/recurringevent.class.php');
+		require_once __DIR__ . '/recurringevent.class.php';
 		$recurringEvent = new RecurringEvent($this->db);
-		$recurringEvent->fetchBy($object->id, 'fk_actioncomm');
+		$res = $recurringEvent->fetchBy($object->id, 'fk_actioncomm');
+
+		if ($res < 0) {
+			dol_syslog('Error while fetching recurring event', LOG_ERR);
+			$this->error = $recurringEvent->error;
+			$this->errors = $recurringEvent->errors;
+			return $res;
+		}
 
 		while (!is_array($recurringEvent->weekday_repeat)) {
 			$recurringEvent->weekday_repeat = unserialize($recurringEvent->weekday_repeat);
@@ -256,9 +263,16 @@ class ActionsRecurringEvent
 			if (!defined('INC_FROM_DOLIBARR')) {
 				define('INC_FROM_DOLIBARR', 1);
 			}
-			dol_include_once('recurringevent/class/recurringevent.class.php');
+			require_once __DIR__ . '/recurringevent.class.php';
 			$recurringEvent = new RecurringEvent($this->db);
-			$recurringEvent->fetchBy($object->id, 'fk_actioncomm');
+			$res = $recurringEvent->fetchBy($object->id, 'fk_actioncomm');
+
+			if($res < 0) {
+				dol_syslog('Error while fetching recurring event', LOG_ERR);
+				$this->error = $recurringEvent->error;
+				$this->errors = $recurringEvent->errors;
+				return $res;
+			}
 
 			$this->resprints = '
                 <!-- DEBUT form récurrence : ceci devrait être externalisé dans un module puis remplacé par l\'appel d\'un hook -->
@@ -402,7 +416,6 @@ class ActionsRecurringEvent
                 <!-- FIN form récurrence -->
                 ';
 		}
-
 
 		return 0;
 	}
