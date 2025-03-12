@@ -261,10 +261,7 @@ class ActionsRecurringEvent
 
 		$this->resprints .= '<script type="text/javascript">';
 
-		$this->resprints .= <<<JS
-				let isModified = $isModified;
-
-				JS;
+		$this->resprints .= "let isModified = $isModified;";
 		$this->resprints .= '</script>';
 		$this->resprints .= '<script type="text/javascript" src="' . dol_buildpath('/recurringevent/js/select-checkbox.js.php?force_use_js=1', 1) . '"></script>';
 	}

@@ -36,6 +36,7 @@ const initCheckboxSelector = () => {
 
     const handleManualCheckboxChange = () => {
         elDateSelector.removeEventListener('input', handleDateSelectorChange);
+        elDateSection.removeEventListener('click', handleDateSelectorChange);
     };
 
     const dynamicCheckboxesHandler = () => {
